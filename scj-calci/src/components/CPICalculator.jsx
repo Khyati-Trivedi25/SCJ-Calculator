@@ -10,10 +10,7 @@ const adTypes = [
   "Banner",
 ];
 
-const CPICalculator = () => {
-  const [currency, setCurrency] = useState("INR");
-  const [selectedPlatform, setSelectedPlatform] = useState("YouTube");
-
+const CPICalculator = ({ currency, platformName, onRevenueChange }) => {
   const [inputs, setInputs] = useState(
     adTypes.reduce((acc, type) => {
       acc[type] = { impressions: "", cpi: "" };
@@ -62,25 +59,24 @@ const CPICalculator = () => {
     const creator = creatorGross - tds;
     const scj = 0.1 * net; // includes GST
 
-    setResults({
+    const finalResults = {
       breakdown,
       gross,
       totalImpressions,
       deductions,
       net,
       shares: { platform, creator, scj },
-    });
+    };
+
+    setResults(finalResults);
+    if (onRevenueChange) onRevenueChange(net);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow">
-      <h2 className="text-xl font-semibold mb-4">CPI Revenue Calculator</h2>
-
-      <CurrencyToggle currency={currency} setCurrency={setCurrency} />
-      <PlatformSelector
-        selectedPlatform={selectedPlatform}
-        setSelectedPlatform={setSelectedPlatform}
-      />
+      <h2 className="text-xl font-semibold mb-4">
+        CPI Revenue Calculator – {platformName}
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {adTypes.map((type) => (

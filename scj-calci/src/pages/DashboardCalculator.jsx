@@ -5,28 +5,48 @@ import MGCalculator from "../components/MGCalculator";
 import CARCalculator from "../components/CARCalculator";
 import TVODCalculator from "../components/TVODCalculator";
 import Sidebar from "../components/Sidebar";
-import PlatformSelector from "../components/PlatformSelector";
 import CurrencyToggle from "../components/CurrencyToggle";
+import CurrencySymbol from "../components/CurrencySymbol";
+import PlatformSelector from "../components/PlatformSelector";
 
 const DashboardCalculator = () => {
   const [selectedModel, setSelectedModel] = useState("CPM");
   const [currency, setCurrency] = useState("INR");
-  const [platform, setPlatform] = useState("YouTube");
+  const [selectedPlatforms, setSelectedPlatforms] = useState(["YouTube"]);
 
-  const renderCalculator = () => {
+  const [platformRevenues, setPlatformRevenues] = useState({});
+
+  const handleRevenueChange = (platform, revenue) => {
+    setPlatformRevenues((prev) => ({
+      ...prev,
+      [platform]: revenue,
+    }));
+  };
+
+  const getTotalRevenue = () => {
+    return Object.values(platformRevenues).reduce((acc, rev) => acc + rev, 0);
+  };
+
+  const renderCalculator = (platform) => {
+    const props = {
+      currency,
+      platformName: platform,
+      onRevenueChange: (rev) => handleRevenueChange(platform, rev),
+    };
+
     switch (selectedModel) {
       case "CPM":
-        return <CPMCalculator currency={currency} />;
+        return <CPMCalculator {...props} />;
       case "CPI":
-        return <CPICalculator currency={currency} />;
+        return <CPICalculator {...props} />;
       case "MG":
-        return <MGCalculator currency={currency} />;
+        return <MGCalculator {...props} />;
       case "CAR":
-        return <CARCalculator currency={currency} />;
+        return <CARCalculator {...props} />;
       case "TVOD":
-        return <TVODCalculator currency={currency} />;
+        return <TVODCalculator {...props} />;
       default:
-        return <div>Select a model from the sidebar</div>;
+        return <div>Select a model</div>;
     }
   };
 
@@ -37,14 +57,35 @@ const DashboardCalculator = () => {
 
       {/* Main Content */}
       <div className="flex-1 bg-white p-6 space-y-6">
-        {/* Header Controls */}
+        {/* Controls */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <PlatformSelector selected={platform} onChange={setPlatform} />
+          <PlatformSelector
+            selectedPlatforms={selectedPlatforms}
+            setSelectedPlatforms={setSelectedPlatforms}
+          />
+
           <CurrencyToggle currency={currency} setCurrency={setCurrency} />
         </div>
 
-        {/* Calculator View */}
-        <div className="mt-4">{renderCalculator()}</div>
+        {/* Calculators */}
+        <div className="space-y-8">
+          {selectedPlatforms.map((platform) => (
+            <div key={platform} className="border p-4 rounded-md shadow">
+              <h3 className="text-lg font-semibold mb-2">
+                {selectedModel} Calculator – {platform}
+              </h3>
+              {renderCalculator(platform)}
+            </div>
+          ))}
+        </div>
+
+        {/* Total Revenue */}
+        {selectedPlatforms.length > 1 && (
+          <div className="mt-8 p-4 rounded-md bg-gray-100 text-lg font-semibold">
+            Total Revenue: <CurrencySymbol currency={currency} />
+            {getTotalRevenue().toFixed(2)}
+          </div>
+        )}
       </div>
     </div>
   );

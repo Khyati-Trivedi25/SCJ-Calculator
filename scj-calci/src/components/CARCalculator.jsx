@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CurrencySymbol from "./CurrencySymbol";
 
-const CARCalculator = ({ currency }) => {
+const CARCalculator = ({ currency, onRevenueChange }) => {
   const [adRequests, setAdRequests] = useState("");
   const [car, setCar] = useState("");
   const [ssaiCost, setSsaiCost] = useState("");
@@ -18,6 +18,12 @@ const CARCalculator = ({ currency }) => {
   const platformShare = netRevenue * 0.5;
   const contentShareAfterTDS = netRevenue * 0.4 * 0.95;
   const scjShare = netRevenue * 0.1;
+
+  useEffect(() => {
+    if (onRevenueChange) {
+      onRevenueChange(netRevenue);
+    }
+  }, [netRevenue, onRevenueChange]);
 
   return (
     <div className="space-y-6">
