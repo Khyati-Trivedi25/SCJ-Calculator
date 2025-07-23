@@ -86,10 +86,6 @@ const MGCalculator = () => {
       </h2>
 
       <CurrencyToggle currency={currency} setCurrency={setCurrency} />
-      <PlatformSelector
-        selectedPlatform={selectedPlatform}
-        setSelectedPlatform={setSelectedPlatform}
-      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {adTypes.map((type) => (
