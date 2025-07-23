@@ -13,13 +13,12 @@ const DashboardCalculator = () => {
   const [selectedModel, setSelectedModel] = useState("CPM");
   const [currency, setCurrency] = useState("INR");
   const [selectedPlatforms, setSelectedPlatforms] = useState(["YouTube"]);
-
   const [platformRevenues, setPlatformRevenues] = useState({});
 
   const handleRevenueChange = (platform, revenue) => {
     setPlatformRevenues((prev) => ({
       ...prev,
-      [platform]: revenue,
+      [platform]: revenue || 0, // prevent NaN
     }));
   };
 
@@ -44,7 +43,7 @@ const DashboardCalculator = () => {
       case "CAR":
         return <CARCalculator {...props} />;
       case "TVOD":
-        return <TVODCalculator {...props} />;
+        return <TVODCalculator currency={currency} />;
       default:
         return <div>Select a model</div>;
     }
@@ -63,7 +62,6 @@ const DashboardCalculator = () => {
             selectedPlatforms={selectedPlatforms}
             setSelectedPlatforms={setSelectedPlatforms}
           />
-
           <CurrencyToggle currency={currency} setCurrency={setCurrency} />
         </div>
 

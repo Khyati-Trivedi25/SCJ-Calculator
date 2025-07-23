@@ -2,9 +2,9 @@ import React from "react";
 
 const allPlatforms = ["YouTube", "Facebook", "JioCinema", "SonyLIV", "Hotstar"];
 
-const PlatformSelector = ({ selectedPlatforms, setSelectedPlatforms }) => {
+const PlatformSelector = ({ selectedPlatforms = [], setSelectedPlatforms }) => {
   const togglePlatform = (platform) => {
-    setSelectedPlatforms((prev) =>
+    setSelectedPlatforms((prev = []) =>
       prev.includes(platform)
         ? prev.filter((p) => p !== platform)
         : [...prev, platform]
