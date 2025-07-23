@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import CurrencyToggle from "./CurrencyToggle";
-import PlatformSelector from "./PlatformSelector";
 
 const adTypes = [
   "Pre Roll",
@@ -10,10 +9,7 @@ const adTypes = [
   "Banner",
 ];
 
-const CPMCalculator = () => {
-  const [currency, setCurrency] = useState("INR");
-  const [selectedPlatform, setSelectedPlatform] = useState("YouTube");
-
+const CPMCalculator = ({ currency, platformName, onRevenueChange }) => {
   const [inputs, setInputs] = useState(
     adTypes.reduce((acc, type) => {
       acc[type] = { impressions: "", cpm: "" };
@@ -60,27 +56,26 @@ const CPMCalculator = () => {
     const creatorGross = 0.4 * net;
     const tds = 0.05 * creatorGross;
     const creator = creatorGross - tds;
-    const scj = 0.1 * net; // includes GST
+    const scj = 0.1 * net;
 
-    setResults({
+    const finalResults = {
       breakdown,
       gross,
       totalImpressions,
       deductions,
       net,
       shares: { platform, creator, scj },
-    });
+    };
+
+    setResults(finalResults);
+    if (onRevenueChange) onRevenueChange(net);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow">
-      <h2 className="text-xl font-semibold mb-4">CPM Revenue Calculator</h2>
-
-      <CurrencyToggle currency={currency} setCurrency={setCurrency} />
-      <PlatformSelector
-        selectedPlatform={selectedPlatform}
-        setSelectedPlatform={setSelectedPlatform}
-      />
+      <h2 className="text-xl font-semibold mb-4">
+        CPM Revenue Calculator – {platformName}
+      </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {adTypes.map((type) => (
