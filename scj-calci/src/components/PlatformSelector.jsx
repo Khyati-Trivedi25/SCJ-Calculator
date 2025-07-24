@@ -1,11 +1,16 @@
 import React from "react";
+import youtubeLogo from "../assets/youtube.jpeg";
+import facebookLogo from "../assets/facebook.jpeg";
+import jiocinemaLogo from "../assets/jiocinema.jpeg";
+import sonyLogo from "../assets/sony.jpeg";
+import hotstarLogo from "../assets/hotstar.jpeg";
 
 const platformData = [
-  { name: "YouTube", icon: "▶️" },
-  { name: "Facebook", icon: "📘" },
-  { name: "JioCinema", icon: "🎬" },
-  { name: "SonyLIV", icon: "📺" },
-  { name: "Hotstar", icon: "🔥" },
+  { name: "YouTube", logo: youtubeLogo },
+  { name: "Facebook", logo: facebookLogo },
+  { name: "JioCinema", logo: jiocinemaLogo },
+  { name: "SonyLIV", logo: sonyLogo },
+  { name: "Hotstar", logo: hotstarLogo },
 ];
 
 const PlatformSelector = ({ selectedPlatforms = [], setSelectedPlatforms }) => {
@@ -21,7 +26,7 @@ const PlatformSelector = ({ selectedPlatforms = [], setSelectedPlatforms }) => {
     <div className="space-y-2">
       <p className="text-lg font-extrabold text-gray-200 mb-2 tracking-tight">Select Platforms:</p>
       <div className="flex flex-wrap gap-4">
-        {platformData.map(({ name, icon }) => {
+        {platformData.map(({ name, logo }) => {
           const selected = selectedPlatforms.includes(name);
           return (
             <button
@@ -34,7 +39,12 @@ const PlatformSelector = ({ selectedPlatforms = [], setSelectedPlatforms }) => {
                   : "border-neutral-700 bg-neutral-900 hover:border-pink-400 hover:scale-105 hover:shadow-md"}
               `}
             >
-              <span className="text-2xl mb-1">{icon}</span>
+              <img
+                src={logo}
+                alt={name + " logo"}
+                className={`w-10 h-10 rounded shadow mb-1 bg-white ${name === 'YouTube' ? 'object-cover' : 'object-contain'}`}
+                draggable={false}
+              />
               <span className="text-xs text-white mt-1">{name}</span>
             </button>
           );
