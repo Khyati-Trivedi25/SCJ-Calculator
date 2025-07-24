@@ -85,8 +85,6 @@ const MGCalculator = () => {
         MG + Revenue Share Calculator
       </h2>
 
-      <CurrencyToggle currency={currency} setCurrency={setCurrency} />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {adTypes.map((type) => (
           <div key={type} className="p-4 border rounded-lg">
