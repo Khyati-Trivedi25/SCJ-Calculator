@@ -81,7 +81,7 @@ const MGCalculator = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
-      <h2 className="text-2xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">MG + Revenue Share Calculator</h2>
+      <h2 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">MG + Revenue Share Calculator</h2>
       <CurrencyToggle currency={currency} setCurrency={setCurrency} />
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4" onSubmit={e => { e.preventDefault(); calculateRevenue(); }}>
         {adTypes.map((type) => (

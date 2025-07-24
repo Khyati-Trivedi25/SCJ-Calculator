@@ -74,7 +74,7 @@ const CPMCalculator = ({ currency, platformName, onRevenueChange }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
-      <h2 className="text-2xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">CPM Revenue Calculator –<span>{platformName}</span> </h2>
+      <h2 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">CPM Revenue Calculator –<span>{platformName}</span> </h2>
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={e => { e.preventDefault(); calculateRevenue(); }}>
         {adTypes.map((type) => (
           <div key={type} className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">

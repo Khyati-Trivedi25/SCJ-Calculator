@@ -39,7 +39,7 @@ const Sidebar = ({ selectedModel, onSelectModel }) => {
 
   return (
     <aside className="w-64 min-h-screen p-6 bg-gradient-to-b from-neutral-900 via-black to-neutral-950 border-r border-neutral-800 flex flex-col">
-      <h2 className="text-2xl font-extrabold mb-8 tracking-tight bg-gradient-to-r from-blue-400 to-purple-800 bg-clip-text text-transparent">Revenue Models</h2>
+      <h2 className="text-2xl font-extrabold mb-8 tracking-tight text-gray-100 ">Revenue Models</h2>
       <nav className="flex-1 space-y-8">
         {sidebarSections.map((section) => (
           <div key={section.title}>
