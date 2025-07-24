@@ -74,39 +74,62 @@ const CPMCalculator = ({ currency, platformName, onRevenueChange }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
-      <h2 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">CPM Revenue Calculator –<span>{platformName}</span> </h2>
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={e => { e.preventDefault(); calculateRevenue(); }}>
+      <h2 className="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-400 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">
+        CPM Revenue Calculator –<span>{platformName}</span>{" "}
+      </h2>
+      <form
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          calculateRevenue();
+        }}
+      >
         {adTypes.map((type) => (
-          <div key={type} className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
-            <span className="font-medium text-gray-300 min-w-[120px] text-sm">{type} Impressions</span>
-            <input
-              type="number"
-              placeholder="e.g. 10000"
-              value={inputs[type].impressions}
-              onChange={e => handleInputChange(type, "impressions", e.target.value)}
-              className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
-            />
+          <div
+            key={type}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2"
+          >
+            {/* Impressions */}
+            <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+              <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+                {type} Impressions
+              </span>
+              <input
+                type="number"
+                placeholder="e.g. 10000"
+                value={inputs[type].impressions}
+                onChange={(e) =>
+                  handleInputChange(type, "impressions", e.target.value)
+                }
+                className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
+              />
+            </div>
+
+            {/* CPM */}
+            <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+              <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+                {type} CPM ({currencySymbol})
+              </span>
+              <input
+                type="number"
+                placeholder="e.g. 50"
+                value={inputs[type].cpm}
+                onChange={(e) => handleInputChange(type, "cpm", e.target.value)}
+                className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
+              />
+            </div>
           </div>
         ))}
-        {adTypes.map((type) => (
-          <div key={type + "-cpm"} className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
-            <span className="font-medium text-gray-300 min-w-[120px] text-sm">{type} CPM ({currencySymbol})</span>
-            <input
-              type="number"
-              placeholder="e.g. 50"
-              value={inputs[type].cpm}
-              onChange={e => handleInputChange(type, "cpm", e.target.value)}
-              className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
-            />
-          </div>
-        ))}
+
         <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 md:col-span-2 min-w-[220px]">
-          <span className="font-medium text-gray-300 min-w-[120px] text-sm">SSAI Cost/1000</span>
+          <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+            SSAI Cost/1000
+          </span>
           <input
             type="number"
             placeholder={`e.g. 2 (${currencySymbol})`}
             value={ssaiCost}
-            onChange={e => setSsaiCost(e.target.value)}
+            onChange={(e) => setSsaiCost(e.target.value)}
             className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
           />
         </div>
@@ -124,46 +147,66 @@ const CPMCalculator = ({ currency, platformName, onRevenueChange }) => {
         <div className="mt-8 space-y-3">
           <h3 className="text-lg font-semibold text-purple-500">Results</h3>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Gross Revenue:</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Gross Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.gross.toFixed(2)}
+              {currencySymbol}
+              {results.gross.toFixed(2)}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Total Impressions:</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Total Impressions:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
               {results.totalImpressions}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Total Deductions:</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Total Deductions:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.deductions.toFixed(2)}
+              {currencySymbol}
+              {results.deductions.toFixed(2)}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Net Revenue:</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Net Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.net.toFixed(2)}
+              {currencySymbol}
+              {results.net.toFixed(2)}
             </div>
           </div>
           <hr className="border-0 h-1 bg-gray-700 opacity-30 my-2" />
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Platform Share (50%):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Platform Share (50%):
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.shares.platform.toFixed(2)}
+              {currencySymbol}
+              {results.shares.platform.toFixed(2)}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Content Creator (40% - 5% TDS):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Content Creator (40% - 5% TDS):
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.shares.creator.toFixed(2)}
+              {currencySymbol}
+              {results.shares.creator.toFixed(2)}
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">SCJ Entertainment (10%):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              SCJ Entertainment (10%):
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              {currencySymbol}{results.shares.scj.toFixed(2)}
+              {currencySymbol}
+              {results.shares.scj.toFixed(2)}
             </div>
           </div>
         </div>
