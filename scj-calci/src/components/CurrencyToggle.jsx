@@ -3,7 +3,7 @@ import React from "react";
 const CurrencyToggle = ({ currency, setCurrency }) => {
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm  font-bold font-medium text-gray-400 mb-1">
         Select Currency
       </label>
       <div className="inline-flex rounded-full border border-gray-300 overflow-hidden">

@@ -69,8 +69,8 @@ const DashboardCalculator = () => {
         <div className="space-y-8">
           {selectedPlatforms.map((platform) => (
             <div key={platform} className="border border-neutral-800 bg-neutral-800 p-4 rounded-md shadow">
-              <h3 className="text-lg font-extrabold mb-2 text-gray-100">
-                {selectedModel} Calculator – {platform}
+              <h3 className="text-lg font-extrabold mb-2 text-yellow-500">
+                
               </h3>
               {renderCalculator(platform)}
             </div>

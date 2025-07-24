@@ -29,41 +29,42 @@ const TVODCalculator = ({ currency }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
-      <h2 className="text-xl font-semibold mb-4 text-gray-100">TVOD Revenue Calculator</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
-        <div className="p-2 border border-neutral-700 rounded-lg bg-neutral-900">
-          <label className="font-medium text-pink-400 mb-1 block">Total Transactions</label>
+    <div className="max-w-3xl mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
+      <h2 className="text-2xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">TVOD Revenue Calculator</h2>
+      <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={e => { e.preventDefault(); setShowResults(true); }}>
+        <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+          <span className="font-medium text-gray-300 min-w-[120px] text-sm">Total Transactions</span>
           <input
             type="number"
-            className="w-full p-2 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400"
+            className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
             value={inputs.transactions}
-            onChange={(e) => handleInputChange("transactions", e.target.value)}
+            onChange={e => handleInputChange("transactions", e.target.value)}
             placeholder="e.g. 1500"
           />
         </div>
-        <div className="p-2 border border-neutral-700 rounded-lg bg-neutral-900">
-          <label className="font-medium text-pink-400 mb-1 block">Ticket Price ({currency})</label>
+        <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+          <span className="font-medium text-gray-300 min-w-[120px] text-sm">Ticket Price ({currency})</span>
           <input
             type="number"
-            className="w-full p-2 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-pink-400"
+            className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
             value={inputs.ticketPrice}
-            onChange={(e) => handleInputChange("ticketPrice", e.target.value)}
+            onChange={e => handleInputChange("ticketPrice", e.target.value)}
             placeholder="e.g. 120 or 1.99"
           />
         </div>
-      </div>
-
-      <button
-        className="mt-6 px-6 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded shadow hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-pink-400"
-        onClick={() => setShowResults(true)}
-      >
-        Create Revenue
-      </button>
+        <div className="md:col-span-2 flex justify-end">
+          <button
+            type="submit"
+            className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded shadow hover:from-blue-700 hover:to-purple-700 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            Create Revenue
+          </button>
+        </div>
+      </form>
 
       {showResults && (
-        <div className="mt-6 space-y-3">
+        <div className="mt-8 space-y-3">
+          <h3 className="text-lg font-semibold text-purple-500">Results</h3>
           <div className="flex items-center gap-3">
             <span className="font-bold text-gray-300 min-w-[160px]">Gross Revenue:</span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">

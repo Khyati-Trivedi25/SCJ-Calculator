@@ -35,8 +35,8 @@ const PlatformSelector = ({ selectedPlatforms = [], setSelectedPlatforms }) => {
               onClick={() => togglePlatform(name)}
               className={`w-20 h-20 flex flex-col items-center justify-center font-semibold rounded-xl border-2 shadow transition-all duration-200 text-lg select-none
                 ${selected
-                  ? "border-pink-500 bg-neutral-900 scale-105 shadow-lg"
-                  : "border-neutral-700 bg-neutral-900 hover:border-pink-400 hover:scale-105 hover:shadow-md"}
+                  ? "border-purple-500 bg-neutral-900 scale-105 shadow-lg"
+                  : "border-neutral-700 bg-neutral-900 hover:border-purple-400 hover:scale-105 hover:shadow-md"}
               `}
             >
               <img
