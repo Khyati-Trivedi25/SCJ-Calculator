@@ -55,7 +55,7 @@ const DashboardCalculator = () => {
       <Sidebar selectedModel={selectedModel} onSelectModel={setSelectedModel} />
 
       {/* Main Content */}
-      <div className="flex-1 bg-white p-6 space-y-6">
+      <div className="flex-1 bg-neutral-900 p-6 space-y-6">
         {/* Controls */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <PlatformSelector
@@ -68,8 +68,8 @@ const DashboardCalculator = () => {
         {/* Calculators */}
         <div className="space-y-8">
           {selectedPlatforms.map((platform) => (
-            <div key={platform} className="border p-4 rounded-md shadow">
-              <h3 className="text-lg font-semibold mb-2">
+            <div key={platform} className="border border-neutral-800 bg-neutral-800 p-4 rounded-md shadow">
+              <h3 className="text-lg font-extrabold mb-2 text-gray-100">
                 {selectedModel} Calculator – {platform}
               </h3>
               {renderCalculator(platform)}
@@ -79,7 +79,7 @@ const DashboardCalculator = () => {
 
         {/* Total Revenue */}
         {selectedPlatforms.length > 1 && (
-          <div className="mt-8 p-4 rounded-md bg-gray-100 text-lg font-semibold">
+          <div className="mt-8 p-4 rounded-md bg-neutral-800 text-lg font-semibold">
             Total Revenue: <CurrencySymbol currency={currency} />
             {getTotalRevenue().toFixed(2)}
           </div>
