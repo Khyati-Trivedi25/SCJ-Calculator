@@ -3,25 +3,49 @@ import CurrencySymbol from "./CurrencySymbol";
 
 const TVODCalculator = ({ currency }) => {
   const [inputs, setInputs] = useState({
-    transactions: "",
+    androidRent: "",
+    androidBuy: "",
+    iosRent: "",
+    iosBuy: "",
     ticketPrice: "",
   });
   const [showResults, setShowResults] = useState(false);
 
-  const totalTransactions = parseFloat(inputs.transactions) || 0;
-  const pricePerTicket = parseFloat(inputs.ticketPrice) || 0;
+  const parse = (val) => parseFloat(val) || 0;
 
-  // Deductions
-  const gstAmount = pricePerTicket * 0.18;
+  const ticketPrice = parse(inputs.ticketPrice);
+  const gst = ticketPrice * 0.18;
   const transactionFee = currency === "INR" ? 3 : 0.1;
-  const inAppFee = pricePerTicket * 0.3;
 
-  const netPerTicket = pricePerTicket - gstAmount - transactionFee - inAppFee;
-  const grossRevenue = totalTransactions * netPerTicket;
+  const calculateNet = (platform) => {
+    const isIOS = platform.includes("ios");
+    const inAppFee = isIOS ? ticketPrice * 0.25 : 0;
+    return ticketPrice - gst - transactionFee - inAppFee;
+  };
 
-  const platformShare = grossRevenue * 0.5;
-  const contentCreatorShare = grossRevenue * 0.4 * 0.95; // After 5% TDS
-  const scjShare = grossRevenue * 0.1;
+  const calcRevenue = (platformKey) => {
+    const streams = parse(inputs[platformKey]);
+    const net = calculateNet(platformKey);
+    return {
+      streams,
+      net,
+      gross: streams * net,
+    };
+  };
+
+  const androidRent = calcRevenue("androidRent");
+  const androidBuy = calcRevenue("androidBuy");
+  const iosRent = calcRevenue("iosRent");
+  const iosBuy = calcRevenue("iosBuy");
+
+  const totalRevenue =
+    androidRent.gross + androidBuy.gross + iosRent.gross + iosBuy.gross;
+  const platformShare = totalRevenue * 0.3;
+  const dashboardCost = totalRevenue * 0.05;
+  const netRevenue = totalRevenue - platformShare - dashboardCost;
+
+  const contentCreatorShare = netRevenue * 0.75 * 0.95; // 5% TDS
+  const scjShare = netRevenue * 0.25;
 
   const handleInputChange = (field, value) => {
     setInputs((prev) => ({ ...prev, [field]: value }));
@@ -30,25 +54,47 @@ const TVODCalculator = ({ currency }) => {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-neutral-900 rounded-xl shadow text-white">
-      <h2 className="text-2xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">TVOD Revenue Calculator</h2>
-      <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={e => { e.preventDefault(); setShowResults(true); }}>
+      <h2 className="text-2xl font-extrabold mb-6 bg-gradient-to-r from-blue-500 to-purple-700 bg-clip-text text-transparent tracking-tight leading-tight">
+        TVOD Revenue Calculator
+      </h2>
+      <form
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setShowResults(true);
+        }}
+      >
+        {[
+          ["androidRent", "Android Rent"],
+          ["androidBuy", "Android Buy"],
+          ["iosRent", "iOS Rent"],
+          ["iosBuy", "iOS Buy"],
+        ].map(([key, label]) => (
+          <div
+            key={key}
+            className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]"
+          >
+            <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+              {label} Streams
+            </span>
+            <input
+              type="number"
+              className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
+              value={inputs[key]}
+              onChange={(e) => handleInputChange(key, e.target.value)}
+              placeholder="e.g. 100"
+            />
+          </div>
+        ))}
         <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
-          <span className="font-medium text-gray-300 min-w-[120px] text-sm">Total Transactions</span>
-          <input
-            type="number"
-            className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
-            value={inputs.transactions}
-            onChange={e => handleInputChange("transactions", e.target.value)}
-            placeholder="e.g. 1500"
-          />
-        </div>
-        <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
-          <span className="font-medium text-gray-300 min-w-[120px] text-sm">Ticket Price ({currency})</span>
+          <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+            Ticket Price ({currency})
+          </span>
           <input
             type="number"
             className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
             value={inputs.ticketPrice}
-            onChange={e => handleInputChange("ticketPrice", e.target.value)}
+            onChange={(e) => handleInputChange("ticketPrice", e.target.value)}
             placeholder="e.g. 120 or 1.99"
           />
         </div>
@@ -57,7 +103,7 @@ const TVODCalculator = ({ currency }) => {
             type="submit"
             className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded shadow hover:from-blue-700 hover:to-purple-700 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
-            Create Revenue
+            Calculate Revenue
           </button>
         </div>
       </form>
@@ -65,35 +111,104 @@ const TVODCalculator = ({ currency }) => {
       {showResults && (
         <div className="mt-8 space-y-3">
           <h3 className="text-lg font-semibold text-purple-500">Results</h3>
+          
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Gross Revenue:</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Android Rent Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />{grossRevenue.toFixed(2)}
+              <CurrencySymbol currency={currency} />
+              {androidRent.gross.toFixed(2)}
             </div>
           </div>
+          
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Net Per Ticket (after GST, platform & transaction fee):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Android Buy Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />{netPerTicket.toFixed(2)}
+              <CurrencySymbol currency={currency} />
+              {androidBuy.gross.toFixed(2)}
             </div>
           </div>
-          <hr className="border-0 h-1 bg-gray-700 opacity-30 my-2" />
+          
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Platform Share (50%):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              iOS Rent Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />{platformShare.toFixed(2)}
+              <CurrencySymbol currency={currency} />
+              {iosRent.gross.toFixed(2)}
             </div>
           </div>
+          
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">Content Creator (40% - 5% TDS):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              iOS Buy Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />{contentCreatorShare.toFixed(2)}
+              <CurrencySymbol currency={currency} />
+              {iosBuy.gross.toFixed(2)}
             </div>
           </div>
+
           <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">SCJ Share (10% incl. GST):</span>
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Total Revenue:
+            </span>
             <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />{scjShare.toFixed(2)}
+              <CurrencySymbol currency={currency} />
+              {totalRevenue.toFixed(2)}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Platform Share (30%):
+            </span>
+            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
+              <CurrencySymbol currency={currency} />
+              {platformShare.toFixed(2)}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Dashboard Upkeep (5%):
+            </span>
+            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
+              <CurrencySymbol currency={currency} />
+              {dashboardCost.toFixed(2)}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Net Revenue:
+            </span>
+            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
+              <CurrencySymbol currency={currency} />
+              {netRevenue.toFixed(2)}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              Content Creator (75% - 5% TDS):
+            </span>
+            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
+              <CurrencySymbol currency={currency} />
+              {contentCreatorShare.toFixed(2)}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-gray-300 min-w-[160px]">
+              SCJ Share (25% incl. GST):
+            </span>
+            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
+              <CurrencySymbol currency={currency} />
+              {scjShare.toFixed(2)}
             </div>
           </div>
         </div>
