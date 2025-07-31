@@ -7,18 +7,21 @@ const TVODCalculator = ({ currency }) => {
     androidBuy: "",
     iosRent: "",
     iosBuy: "",
-    ticketPrice: "",
+    androidRentPrice: "",
+    androidBuyPrice: "",
+    iosRentPrice: "",
+    iosBuyPrice: "",
   });
   const [showResults, setShowResults] = useState(false);
 
   const parse = (val) => parseFloat(val) || 0;
 
-  const ticketPrice = parse(inputs.ticketPrice);
-  const gst = ticketPrice * 0.18;
-  const transactionFee = currency === "INR" ? 3 : 0.1;
-
-  const calculateNet = (platform) => {
-    const isIOS = platform.includes("ios");
+  const calculateNet = (platformKey) => {
+    const priceKey = platformKey + "Price";
+    const ticketPrice = parse(inputs[priceKey]);
+    const gst = ticketPrice * 0.18;
+    const transactionFee = currency === "INR" ? 3 : 0.1;
+    const isIOS = platformKey.includes("ios");
     const inAppFee = isIOS ? ticketPrice * 0.25 : 0;
     return ticketPrice - gst - transactionFee - inAppFee;
   };
@@ -41,8 +44,7 @@ const TVODCalculator = ({ currency }) => {
   const totalRevenue =
     androidRent.gross + androidBuy.gross + iosRent.gross + iosBuy.gross;
   const platformShare = totalRevenue * 0.3;
-  const dashboardCost = totalRevenue * 0.05;
-  const netRevenue = totalRevenue - platformShare - dashboardCost;
+  const netRevenue = totalRevenue - platformShare;
 
   const contentCreatorShare = netRevenue * 0.75 * 0.95; // 5% TDS
   const scjShare = netRevenue * 0.25;
@@ -72,32 +74,36 @@ const TVODCalculator = ({ currency }) => {
         ].map(([key, label]) => (
           <div
             key={key}
-            className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]"
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2"
           >
-            <span className="font-medium text-gray-300 min-w-[120px] text-sm">
-              {label} Streams
-            </span>
-            <input
-              type="number"
-              className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
-              value={inputs[key]}
-              onChange={(e) => handleInputChange(key, e.target.value)}
-              placeholder="e.g. 100"
-            />
+            {/* Streams */}
+            <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+              <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+                {label} Streams
+              </span>
+              <input
+                type="number"
+                className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
+                value={inputs[key]}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+                placeholder="e.g. 100"
+              />
+            </div>
+            {/* Price */}
+            <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
+              <span className="font-medium text-gray-300 min-w-[120px] text-sm">
+                {label} Price ({currency})
+              </span>
+              <input
+                type="number"
+                className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
+                value={inputs[key + "Price"]}
+                onChange={(e) => handleInputChange(key + "Price", e.target.value)}
+                placeholder="e.g. 120 or 1.99"
+              />
+            </div>
           </div>
         ))}
-        <div className="flex items-center gap-2 p-2 border border-neutral-700 rounded bg-neutral-900 h-12 min-w-[220px]">
-          <span className="font-medium text-gray-300 min-w-[120px] text-sm">
-            Ticket Price ({currency})
-          </span>
-          <input
-            type="number"
-            className="flex-1 p-1 border border-neutral-700 rounded bg-neutral-800 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 text-right text-sm h-8"
-            value={inputs.ticketPrice}
-            onChange={(e) => handleInputChange("ticketPrice", e.target.value)}
-            placeholder="e.g. 120 or 1.99"
-          />
-        </div>
         <div className="md:col-span-2 flex justify-end">
           <button
             type="submit"
@@ -172,15 +178,7 @@ const TVODCalculator = ({ currency }) => {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-gray-300 min-w-[160px]">
-              Dashboard Upkeep (5%):
-            </span>
-            <div className="flex-1 p-2 border border-neutral-700 rounded bg-neutral-800 text-white text-right">
-              <CurrencySymbol currency={currency} />
-              {dashboardCost.toFixed(2)}
-            </div>
-          </div>
+
           
           <div className="flex items-center gap-3">
             <span className="font-bold text-gray-300 min-w-[160px]">
